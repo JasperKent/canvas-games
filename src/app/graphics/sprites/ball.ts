@@ -6,6 +6,7 @@ export class Ball implements Sprite {
     velocity = new Velocity();
     position = new Position();
     
+    mass = 1;
     radius = 0;
     image: HTMLImageElement;
 
@@ -64,26 +65,24 @@ export class Ball implements Sprite {
         }
     }
 
-    private doBounce(that: Ball) {
+    private doBounce(that: Ball): void {        
         const xOff = this.nextPosition().x - that.nextPosition().x;
         const yOff = this.nextPosition().y - that.nextPosition().y;
 
-        const collisionAngle = Math.atan2(yOff, xOff );
+        const collisionAngle = Math.atan2(yOff, xOff);
 
-        changeVelocity(this);
-        changeVelocity(that);
+        const thisUx = this.velocity.modulus() * Math.cos(collisionAngle - this.velocity.angle());
+        const thatUx = that.velocity.modulus() * Math.cos(collisionAngle - that.velocity.angle());
 
-        function changeVelocity(ball: Ball) {
-            const approachAngle = Math.atan2(ball.velocity.dy, ball.velocity.dx) - Math.PI;
+        const impulseMag = Math.abs (2 * this.mass * that.mass * (thisUx - thatUx)/(this.mass + that.mass));
 
-            const incidentAngle = collisionAngle - approachAngle;
+        const impulseX = impulseMag * Math.cos(collisionAngle);
+        const impulseY = impulseMag * Math.sin(collisionAngle);
 
-            const finalAngle = approachAngle + 2 * incidentAngle;
+        this.velocity.dx += impulseX/this.mass;
+        this.velocity.dy += impulseY/this.mass;
 
-            const speed = Math.sqrt(ball.velocity.dx * ball.velocity.dx + ball.velocity.dy * ball.velocity.dy);
-
-            ball.velocity.dx = speed * Math.cos(finalAngle);
-            ball.velocity.dy = speed * Math.sin(finalAngle);
-        }
+        that.velocity.dx -= impulseX/that.mass;
+        that.velocity.dy -= impulseY/that.mass;
     }
 }

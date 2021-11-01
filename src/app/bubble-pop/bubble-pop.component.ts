@@ -33,7 +33,7 @@ export class BubblePopComponent implements AfterViewInit {
 
     this.universe = new Universe(this.canvas.nativeElement.width, this.canvas.nativeElement.height);
 
-    for (let i = 0; i < 96; ++i)
+    for (let i = 0; i < 24; ++i)
     {
         let ball!: Ball;
 
@@ -46,11 +46,11 @@ export class BubblePopComponent implements AfterViewInit {
           case 5: ball = new Ball('assets/CyanBall.png'); break;
         }
 
-        ball.velocity.dx = 0.1;
-        ball.velocity.dy = 0.1 + 0.001 * i;
+        ball.velocity.dx = 0.2;
+        ball.velocity.dy = 0.2;
 
-        ball.position.x = this.canvas.nativeElement.width/2;
-        ball.position.y = this.canvas.nativeElement.height/2;
+        ball.position.x = (70 * i) % this.canvas.nativeElement.width;
+        ball.position.y = (70 * i) % this.canvas.nativeElement.height;
 
 
         this.universe.addSprite(ball);
